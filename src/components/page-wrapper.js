@@ -7,7 +7,7 @@ import { HotKeys } from 'react-hotkeys'
 import { connectTo } from '../utils/generic'
 import { enterPage, exitPage } from '../actions/generic'
 
-import Loader from './reusable/loader'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Loading = styled.div`
   height: 100vh;
@@ -48,7 +48,7 @@ class PageWrapper extends React.Component {
       </DocumentTitle>
     ) : (
       <Loading>
-        <Loader />
+        <CircularProgress/>
       </Loading>
     )
   }
