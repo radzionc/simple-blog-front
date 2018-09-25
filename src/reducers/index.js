@@ -4,6 +4,7 @@ import { reducer as formReducer } from 'redux-form'
 import navigation from './navigation'
 import auth from './auth'
 import cache from './cache'
+import navbar from './navbar'
 
 import { unauthorizeUser } from '../actions/auth'
 import { receiveMockState } from '../actions/mock'
@@ -17,6 +18,7 @@ const getNewReducer = _ =>
       auth,
       cache,
       form,
+      navbar,
     }).reduce(
       (acc, [key, value]) => ({
         ...acc,

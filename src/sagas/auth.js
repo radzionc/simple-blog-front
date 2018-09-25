@@ -9,7 +9,6 @@ import { startApp } from '../actions/generic'
 
 const authSaga = (url, thanGoTo) =>
   function*({ payload: { values, reject } }) {
-    console.log(values)
     try {
       const authData = yield call(post, url, values)
       yield put(receiveAuthData(authData))

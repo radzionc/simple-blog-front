@@ -1,7 +1,8 @@
 import React from 'react'
-import { Paper, Button } from '@material-ui/core'
 import styled from 'styled-components'
+import { Paper, Button } from '@material-ui/core'
 
+import Logo from '../logo'
 import Page from '../page-wrapper'
 import { submitAsyncValidation} from '../../utils/forms'
 
@@ -29,12 +30,6 @@ const BottomText = styled(Button)`
   }
 `
 
-const Logo = styled.h1`
-  margin: 10px;
-  text-align: center;
-  font-family: 'Dancing Script', cursive;
-`
-
 export default ({ handleSubmit, enabledSubmit, onSubmit, submitText, onBottomTextClick, bottomText, fields }) => {
   const pageStyle = {
     height: '100vh',
@@ -49,7 +44,7 @@ export default ({ handleSubmit, enabledSubmit, onSubmit, submitText, onBottomTex
         <Form
           onSubmit={submitAsyncValidation(handleSubmit, enabledSubmit, onSubmit)}
         >
-          <Logo>Simple Blog</Logo>
+          <Logo/>
           {fields}
           <SubmitButton type="submit" variant="outlined" disabled={!enabledSubmit}>{submitText}</SubmitButton>
         </Form>
