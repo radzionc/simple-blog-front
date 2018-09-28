@@ -16,8 +16,8 @@ const getDefaultState = () => ({
   selectedMarks: []
 })
 
-export default () =>
-  createReducer({
+export default () => createReducer(
+  {
     [a.changeTitle]: (state, title) => ({
       ...state,
       title: title.slice(0, MAX_TITLE_LENGTH),
@@ -30,6 +30,8 @@ export default () =>
     }),
     [a.toggleMark]: (state, mark) => ({
       ...state,
-      selectedMarks: selectedMarks.includes(mark) ? selectedMarks.without(mark) : [...selectedMarks, mark]
+      selectedMarks: state.selectedMarks.includes(mark) ? state.selectedMarks.without_(mark) : [...state.selectedMarks, mark]
     })
-  })
+  },
+  getDefaultState()
+)

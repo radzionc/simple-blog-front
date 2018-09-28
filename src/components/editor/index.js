@@ -1,9 +1,15 @@
 import React from 'react'
 
+import Page from '../page-wrapper'
+import MarksMenu from './marks-menu'
+
 export default () => {
   return (
-    <h1>
-      Editor
-    </h1>
+    <Page>
+      <h1>
+        Editor
+      </h1>
+      <MarksMenu/>
+    </Page>
   )
 }

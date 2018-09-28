@@ -7,6 +7,7 @@ export const getDefaultState = _ => ({
   stateReceived: {
     login: true,
     register: true,
+    editor: true,
   }
 })
 

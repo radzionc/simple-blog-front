@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/fontawesome-svg-core": "^1.2.4",
+    "@fortawesome/react-fontawesome": "^0.1.3",
     "@material-ui/core": "^3.1.0",
     "@material-ui/icons": "^3.0.1",
     "lodash": "^4.17.11",
@@ -25,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "mockrun": "REACT_APP_MOCK=true node react-scripts start"
+    "mockrun": "REACT_APP_MOCK=true react-scripts start"
   },
   "devDependencies": {
     "lint-staged": "^7.3.0",
