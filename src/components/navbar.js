@@ -17,11 +17,15 @@ const StyledToolbar = styled(Toolbar)`
   justify-content: space-between;
 `
 
-const Navbar = ({ unauthorizeUser, dropdownOpen, dropdownAnchor, toggleDropdown }) => {
+const Navbar = ({ to, unauthorizeUser, dropdownOpen, dropdownAnchor, toggleDropdown }) => {
+  const itemHandler = func => () => {
+    toggleDropdown()
+    func()
+  }
   return (
     <AppBar position='static'>
       <StyledToolbar>
-        <Logo/>
+        <Logo onClick={() => to('start')}/>
         <div>
           <IconButton
             aria-owns={dropdownOpen ? 'menu-appbar' : null}
@@ -45,7 +49,8 @@ const Navbar = ({ unauthorizeUser, dropdownOpen, dropdownAnchor, toggleDropdown 
             open={dropdownOpen}
             onClose={toggleDropdown}
           >
-            <MenuItem onClick={() => toggleDropdown() && unauthorizeUser()}>Logout</MenuItem>
+            <MenuItem onClick={itemHandler(unauthorizeUser)}>Sign out</MenuItem>
+            <MenuItem onClick={itemHandler(() => to('editor'))}>New story</MenuItem>
           </Menu>
         </div>
       </StyledToolbar>
