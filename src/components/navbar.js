@@ -1,7 +1,6 @@
 import React from 'react'
 import { AppBar, Toolbar, Menu, MenuItem, IconButton } from '@material-ui/core'
 import { AccountCircle } from '@material-ui/icons'
-import { withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components'
 
 import * as actions from '../actions/navbar'
