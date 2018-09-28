@@ -1,6 +1,7 @@
 import { createReducer } from 'redux-act'
 
 import * as a from '../actions/editor'
+import { tick } from '../actions/generic'
 import { MAX_TITLE_LENGTH } from '../constants/editor';
 
 const getDefaultState = () => ({
@@ -10,10 +11,11 @@ const getDefaultState = () => ({
       nodes: []
     }
   },
-  lastSave: undefined,
+  lastSave: Date.now(),
   lastEdit: undefined,
   tagsMenuOpen: false,
-  selectedMarks: []
+  selectedMarks: [],
+  changesSaved: true,
 })
 
 export default () => createReducer(
@@ -31,6 +33,14 @@ export default () => createReducer(
     [a.toggleMark]: (state, mark) => ({
       ...state,
       selectedMarks: state.selectedMarks.includes(mark) ? state.selectedMarks.without_(mark) : [...state.selectedMarks, mark]
+    }),
+    [a.successfulSave]: (state, lastSave) => ({
+      ...state,
+      lastSave
+    }),
+    [tick]: (state) => ({
+      ...state,
+      changesSaved: !state.lastEdit || state.lastSave > state.lastEdit
     })
   },
   getDefaultState()

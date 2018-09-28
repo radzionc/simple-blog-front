@@ -34,7 +34,6 @@ export default connectTo(
   state => state.editor,
   actions,
   ({ selectedMarks, toggleMark }) => {
-    console.log(selectedMarks)
     const items = [
       [faBold, 'bold'],
       [faItalic, 'italic'],
