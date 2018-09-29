@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBold,
   faItalic,
-  faLink,
+  // faLink,
   faQuoteRight,
   faCode,
   faListOl,
@@ -37,12 +37,12 @@ export default connectTo(
     const items = [
       [faBold, 'bold'],
       [faItalic, 'italic'],
-      [faLink, 'link'],
+      // [faLink, 'link'],
       [faCode, 'code'],
       [faHeading, 'heading-one'],
       [faHeading, 'heading-two'],
       [faListOl, 'numbered-list'],
-      [faListUl, 'ordered-list'],
+      [faListUl, 'bulleted-list'],
       [faQuoteRight, 'block-quote']
     ].map(([ icon, mark]) => (
       <Mark

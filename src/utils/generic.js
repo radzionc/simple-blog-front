@@ -59,3 +59,9 @@ export const logArgs = func => (...args) => {
   console.info(`${func.name} args: `, ...args)
   return func(...args)
 }
+
+export const switchCase = (cases, key, defaultCase) => {
+  // console.log(key)
+  const func = cases[key]
+  return func ? func() : defaultCase()
+}

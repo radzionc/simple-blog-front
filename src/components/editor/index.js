@@ -7,6 +7,7 @@ import MarksMenu from './marks-menu'
 import Title from './title'
 import Save from './save'
 import Publish from './publish'
+import Editor from './editor'
 
 const Container = styled(Paper)`
   margin: 40px;
@@ -32,6 +33,7 @@ export default () => {
       </TopLine>
       <Container>
         <Title/>
+        <Editor/>
       </Container>
       <MarksMenu/>
     </Page>
