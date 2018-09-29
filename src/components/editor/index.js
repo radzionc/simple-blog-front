@@ -3,14 +3,16 @@ import styled from 'styled-components'
 import { Paper } from '@material-ui/core'
 
 import Page from '../page-wrapper'
-import MarksMenu from './marks-menu'
+import EffectsMenu from './effects-menu'
 import Title from './title'
 import Save from './save'
 import Publish from './publish'
 import Editor from './editor'
 
+const SIDE_PADDING = 50;
+
 const Container = styled(Paper)`
-  margin: 40px;
+  margin: ${SIDE_PADDING}px;
   min-height: 320px;
   padding: 20px;
 `
@@ -22,11 +24,12 @@ const TopLine = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding: 0 ${SIDE_PADDING}px;
 `
 
 export default () => {
   return (
-    <Page style={{ padding: '0 40px' }}>
+    <Page style={{ padding: `0 ${SIDE_PADDING}px` }}>
       <TopLine>
         <Save/>
         <Publish/>
@@ -35,7 +38,7 @@ export default () => {
         <Title/>
         <Editor/>
       </Container>
-      <MarksMenu/>
+      <EffectsMenu/>
     </Page>
   )
 }

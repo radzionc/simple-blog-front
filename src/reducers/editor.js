@@ -13,7 +13,13 @@ const getDefaultState = () => ({
         {
           object: 'block',
           type: 'paragraph',
-          nodes: [],
+          // nodes: [ 
+          //   { 
+          //     object: 'block', 
+          //     type: 'paragraph', 
+          //     nodes: [], 
+          //   }, 
+          // ], 
         },
       ],
     },
@@ -21,7 +27,7 @@ const getDefaultState = () => ({
   lastSave: Date.now(),
   lastEdit: undefined,
   tagsMenuOpen: false,
-  selectedMarks: [],
+  selectedEffects: [],
   changesSaved: true,
 })
 
@@ -41,9 +47,16 @@ export default () => createReducer(
     }),
     [a.changeContent]: (state, content) => {
       const activeMarks = content.activeMarks.map(mark => mark.type).toArray()
-      const activeTypes = content.blocks.map(block => block.type).toArray()
-      const selectedMarks = [ ...activeMarks, ...activeTypes ]
-      return changeContent({ ...state, selectedMarks }, content)
+      const lists = ['numbered-list', 'bulleted-list']
+      const activeBlocks = content.blocks.map(block => block.type).toArray().without_(...lists)
+
+      const first = content.blocks.first()
+      const activeLists = first ? lists.filter(list => {
+        const parent = content.document.getParent(first.key)
+        return content.blocks.some(node => node.type === 'list-item') && parent && parent.type === list
+      }) : []
+      const selectedEffects = [ ...activeMarks, ...activeBlocks, ...activeLists ]
+      return changeContent({ ...state, selectedEffects }, content)
     },
     [a.successfulSave]: (state, lastSave) => ({
       ...state,
@@ -53,53 +66,57 @@ export default () => createReducer(
       ...state,
       changesSaved: !state.lastEdit || state.lastSave > state.lastEdit
     }),
-    [a.toggleMark]: (state, type) => {
-      const selectedMarks = state.selectedMarks.includes(type) ?
-        state.selectedMarks.without_(type) :
-        [...state.selectedMarks, type]
-
-      if (['bold', 'italic', 'code'].includes(type)) {
-        const { value } = state.content.change().toggleMark(type)
-        return changeContent({ ...state, selectedMarks }, value)
-      } else {
-        const value = state.content
-        const change = value.change()
-        const { document } = value
-        const hasBlock = type => value.blocks.some(node => node.type === type)
-        if (!['bulleted-list', 'numbered-list'].includes(type)) {
-          const isActive = hasBlock(type)
-          const isList = hasBlock('list-item')
-    
-          if (isList) {
-            change
-              .setBlocks(isActive ? 'paragraph' : type)
-              .unwrapBlock('bulleted-list')
-              .unwrapBlock('numbered-list')
-          } else {
-            change.setBlocks(isActive ? 'paragraph' : type)
-          }
+    [a.toggleEffect]: (state, type) => {
+      try {
+        const selectedEffects = state.selectedEffects.includes(type) ?
+        state.selectedEffects.without_(type) :
+        [...state.selectedEffects, type]
+        if (['bold', 'italic', 'code'].includes(type)) {
+          const { value } = state.content.change().toggleMark(type)
+          return changeContent({ ...state, selectedEffects }, value)
         } else {
-          // Handle the extra wrapping required for list buttons.
-          const isList = hasBlock('list-item')
-          const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type))
-    
-          if (isList && isType) {
-            change
-              .setBlocks('paragraph')
-              .unwrapBlock('bulleted-list')
-              .unwrapBlock('numbered-list')
-          } else if (isList) {
-            change
-              .unwrapBlock(
-                type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
-              )
-              .wrapBlock(type)
+          const value = state.content
+          const change = value.change()
+          const { document } = value
+          const hasBlock = type => value.blocks.some(node => node.type === type)
+          if (!['bulleted-list', 'numbered-list'].includes(type)) {
+            const isActive = hasBlock(type)
+            const isList = hasBlock('list-item')
+      
+            if (isList) {
+              change
+                .setBlocks(isActive ? 'paragraph' : type)
+                .unwrapBlock('bulleted-list')
+                .unwrapBlock('numbered-list')
+            } else {
+              change.setBlocks(isActive ? 'paragraph' : type)
+            }
           } else {
-            change.setBlocks('list-item').wrapBlock(type)
+            // Handle the extra wrapping required for list buttons.
+            const isList = hasBlock('list-item')
+            const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type))
+      
+            if (isList && isType) {
+              change
+                .setBlocks('paragraph')
+                .unwrapBlock('bulleted-list')
+                .unwrapBlock('numbered-list')
+            } else if (isList) {
+              change
+                .unwrapBlock(
+                  type === 'bulleted-list' ? 'numbered-list' : 'bulleted-list'
+                )
+                .wrapBlock(type)
+            } else {
+              change.setBlocks('list-item').wrapBlock(type)
+            }
           }
+      
+          return changeContent({ ...state, selectedEffects }, change.value)
         }
-    
-        return changeContent({ ...state, selectedMarks }, change.value)
+      } catch(err) {
+        console.info('fail to execute effect')
+        return state
       }
     }
   },

@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBold,
   faItalic,
-  // faLink,
   faQuoteRight,
   faCode,
   faListOl,
@@ -15,15 +14,16 @@ import styled from 'styled-components'
 
 import * as actions from '../../actions/editor'
 import { connectTo } from '../../utils/generic'
+import { MARKS, BLOCKS } from '../../constants/editor'
 
 const Container = styled(Paper)`
   width: 50px;
-  position: absolute;
+  position: fixed;
   right: 20px;
   bottom: 20px;
 `
 
-const Mark = styled(MenuItem)`
+const Effect = styled(MenuItem)`
   && {
     display: flex;
     justify-content: center;
@@ -33,28 +33,28 @@ const Mark = styled(MenuItem)`
 export default connectTo(
   state => state.editor,
   actions,
-  ({ selectedMarks, toggleMark }) => {
+  ({ selectedEffects, toggleEffect }) => {
     const items = [
-      [faBold, 'bold'],
-      [faItalic, 'italic'],
-      // [faLink, 'link'],
-      [faCode, 'code'],
-      [faHeading, 'heading-one'],
-      [faHeading, 'heading-two'],
-      [faListOl, 'numbered-list'],
-      [faListUl, 'bulleted-list'],
-      [faQuoteRight, 'block-quote']
-    ].map(([ icon, mark]) => (
-      <Mark
-        key={mark}
-        selected={selectedMarks.includes(mark)}
-        onClick={() => toggleMark(mark)}
+      [faBold, MARKS.BOLD],
+      [faItalic, MARKS.ITALIC],
+      [faCode, MARKS.CODE],
+
+      [faHeading, BLOCKS.HEADING_ONE],
+      [faHeading, BLOCKS.HEADING_TWO],
+      [faListOl, BLOCKS.NUMBERED_LIST],
+      [faListUl, BLOCKS.BULLETED_LIST],
+      [faQuoteRight, BLOCKS.QUOTE]
+    ].map(([ icon, effect]) => (
+      <Effect
+        key={effect}
+        selected={selectedEffects.includes(effect)}
+        onClick={() => toggleEffect(effect)}
       >
         <FontAwesomeIcon
           icon={icon}
-          size={mark !== 'heading-two' ? 'sm' : 'xs'}
+          size={effect !== BLOCKS.HEADING_TWO ? 'sm' : 'xs'}
         />
-      </Mark>
+      </Effect>
     ))
 
     return (

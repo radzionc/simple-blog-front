@@ -9,7 +9,7 @@ export default connectTo(
   actions,
   ({ changesSaved, save }) => {
     return changesSaved ? (
-      <h4>Saved</h4>
+      <p>Saved</p>
     ) : (
       <Button variant='outlined' onClick={save}>
         Save
