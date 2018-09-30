@@ -9,7 +9,8 @@ import {
   faCode,
   faListOl,
   faListUl,
-  faHeading
+  faHeading,
+  faImage
 } from '@fortawesome/fontawesome-free-solid'
 import styled from 'styled-components'
 
@@ -40,11 +41,12 @@ export default connectTo(
       [faItalic, MARKS.ITALIC],
       [faCode, MARKS.CODE],
       [faLink, BLOCKS.LINK],
+      [faImage, BLOCKS.IMAGE],
       [faHeading, BLOCKS.HEADING_ONE],
       [faHeading, BLOCKS.HEADING_TWO],
       [faListOl, BLOCKS.NUMBERED_LIST],
       [faListUl, BLOCKS.BULLETED_LIST],
-      [faQuoteRight, BLOCKS.QUOTE]
+      [faQuoteRight, BLOCKS.QUOTE],
     ].map(([ icon, effect]) => (
       <Effect
         key={effect}

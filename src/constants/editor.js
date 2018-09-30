@@ -13,5 +13,6 @@ export const BLOCKS = {
   HEADING_TWO: 'heading-two',
   NUMBERED_LIST: 'numbered-list',
   BULLETED_LIST: 'bulleted-list',
-  QUOTE: 'block-quote'
+  QUOTE: 'block-quote',
+  IMAGE: 'image'
 }

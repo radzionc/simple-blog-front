@@ -18,7 +18,7 @@ export default connectTo(
       onClose={exitlinkPrompt}
       aria-labelledby="form-dialog-link"
     >
-      <DialogTitle id="form-dialog-link">Enter the URL of the link</DialogTitle>
+      <DialogTitle id="form-dialog-link">Enter the URL</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus

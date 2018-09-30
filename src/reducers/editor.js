@@ -40,6 +40,11 @@ const wrapLink = (change, href) => change.wrapInline({
   data: { href }
 })
 
+const insertImage = (change, src) => change.insertBlock({
+  type: BLOCKS.IMAGE,
+  data: { src }
+})
+
 export default () => createReducer(
   {
     [a.changeTitle]: (state, title) => ({
@@ -81,7 +86,7 @@ export default () => createReducer(
         const hasBlock = type => value.blocks.some(node => node.type === type)
         const isList = hasBlock('list-item')
 
-        if (type === 'link') {
+        if (type === BLOCKS.LINK) {
           // no way to make list a link
           if (isList) return state
 
@@ -93,7 +98,9 @@ export default () => createReducer(
           if (!value.selection.isExpanded) return state
           return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
         }
-
+        if (type === BLOCKS.IMAGE) {
+          return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
+        }
         if (Object(MARKS).values().includes(type)) {
           return changeContent(
             { ...state, selectedEffects },
@@ -141,11 +148,10 @@ export default () => createReducer(
     [a.exitLinkPrompt]: state => ({ ...state, linkPromptOpen: false, link: '', selectedEffects: state.selectedEffects.without_(BLOCKS.LINK) }),
     [a.changeLink]: (state, link) => ({ ...state, link }),
     [a.submitLink]: state => {
-      if (!state.link) return ({ ...state, linkPromptOpen: false, selectedEffects: state.selectedEffects.without_(BLOCKS.LINK) })
-      
-      const change = state.content.change()
-      change.call(wrapLink, state.link)
+      if (!state.link) return ({ ...state, linkPromptOpen: false, selectedEffects: state.selectedEffects.without_(BLOCKS.LINK, BLOCKS.IMAGE) })
 
+      const change = state.content.change()
+      change.call(state.selectedEffects.includes(BLOCKS.LINK) ? wrapLink : insertImage, state.link)
       return changeContent({ ...state, linkPromptOpen: false, link: '', }, change.value)
     }
   },
