@@ -9,5 +9,5 @@ export function* save() {
 }
 
 export function* publish() {
-
+  console.log('publish time !!!')
 }

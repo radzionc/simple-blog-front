@@ -19,11 +19,13 @@ const getDefaultState = () => ({
   }),
   lastSave: Date.now(),
   lastEdit: undefined,
-  tagsMenuOpen: false,
   selectedEffects: [],
   changesSaved: true,
   linkPromptOpen: false,
-  link: ''
+  link: '',
+  tags: [],
+  tagsMenuOpen: false,
+  editingTag: ''
 })
 
 const changeContent = (state, content) => ({
@@ -153,7 +155,24 @@ export default () => createReducer(
       const change = state.content.change()
       change.call(state.selectedEffects.includes(BLOCKS.LINK) ? wrapLink : insertImage, state.link)
       return changeContent({ ...state, linkPromptOpen: false, link: '', }, change.value)
-    }
+    },
+    [a.toggleTagsMenu]: state => ({
+      ...state,
+      tagsMenuOpen: !state.tagsMenuOpen
+    }),
+    [a.editTag]: (state, editingTag) => ({ 
+      ...state,
+      editingTag
+    }),
+    [a.submitTag]: state => ({
+      ...state,
+      tags: (state.editingTag ? [ ...state.tags, state.editingTag] : state.tags).uniq_(),
+      editingTag: '',
+    }),
+    [a.deleteTag]: (state, tag) => ({
+      ...state,
+      tags: state.tags.without_(tag)
+    })
   },
   getDefaultState()
 )

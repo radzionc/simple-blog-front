@@ -25,7 +25,7 @@ const Quote = styled.blockquote`
 `
 
 const HeadingOne = styled.h1`
-  padding: 10px 0 ;
+  padding: 10px 0;
 `
 
 const HeadingTwo = styled.h2`
@@ -75,11 +75,9 @@ const schema = {
   document: {
     last: { type: 'paragraph' },
     normalize: (change, { code, node, child }) => {
-      switch (code) {
-        case 'last_child_type_invalid': {
-          const paragraph = Block.create('paragraph')
-          return change.insertNodeByKey(node.key, node.nodes.size, paragraph)
-        }
+      if (code === 'last_child_type_invalid') {
+        const paragraph = Block.create('paragraph')
+        return change.insertNodeByKey(node.key, node.nodes.size, paragraph)
       }
     },
   },
