@@ -5,6 +5,7 @@ import {
   faBold,
   faItalic,
   faQuoteRight,
+  faLink,
   faCode,
   faListOl,
   faListUl,
@@ -38,7 +39,7 @@ export default connectTo(
       [faBold, MARKS.BOLD],
       [faItalic, MARKS.ITALIC],
       [faCode, MARKS.CODE],
-
+      [faLink, BLOCKS.LINK],
       [faHeading, BLOCKS.HEADING_ONE],
       [faHeading, BLOCKS.HEADING_TWO],
       [faListOl, BLOCKS.NUMBERED_LIST],

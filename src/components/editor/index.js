@@ -8,6 +8,8 @@ import Title from './title'
 import Save from './save'
 import Publish from './publish'
 import Editor from './editor'
+import LinkDialog from './link-dialog'
+import { connectTo } from '../../utils/generic';
 
 const SIDE_PADDING = 50;
 
@@ -27,8 +29,10 @@ const TopLine = styled.div`
   padding: 0 ${SIDE_PADDING}px;
 `
 
-export default () => {
-  return (
+export default connectTo(
+  state => state.editor,
+  {},
+  ({ linkPromptOpen }) => (
     <Page style={{ padding: `0 ${SIDE_PADDING}px` }}>
       <TopLine>
         <Save/>
@@ -39,6 +43,7 @@ export default () => {
         <Editor/>
       </Container>
       <EffectsMenu/>
+      { linkPromptOpen && <LinkDialog/>}
     </Page>
   )
-}
+)

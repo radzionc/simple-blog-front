@@ -3,7 +3,7 @@ import { Value } from 'slate'
 
 import * as a from '../actions/editor'
 import { tick } from '../actions/generic'
-import { MAX_TITLE_LENGTH } from '../constants/editor';
+import { MAX_TITLE_LENGTH, MARKS, BLOCKS } from '../constants/editor';
 
 const getDefaultState = () => ({
   title: '',
@@ -12,14 +12,7 @@ const getDefaultState = () => ({
       nodes: [
         {
           object: 'block',
-          type: 'paragraph',
-          // nodes: [ 
-          //   { 
-          //     object: 'block', 
-          //     type: 'paragraph', 
-          //     nodes: [], 
-          //   }, 
-          // ], 
+          type: 'paragraph', 
         },
       ],
     },
@@ -29,6 +22,8 @@ const getDefaultState = () => ({
   tagsMenuOpen: false,
   selectedEffects: [],
   changesSaved: true,
+  linkPromptOpen: false,
+  link: ''
 })
 
 const changeContent = (state, content) => ({
@@ -36,6 +31,13 @@ const changeContent = (state, content) => ({
   content,
   // to: hack
   lastEdit: JSON.stringify(state.content) === JSON.stringify(content) ? state.lastEdit : Date.now()
+})
+
+const hasLink = value => value.inlines.some(inline => inline.type === BLOCKS.LINK)
+const unwrapLink = change => change.unwrapInline(BLOCKS.LINK)
+const wrapLink = (change, href) => change.wrapInline({
+  type: BLOCKS.LINK,
+  data: { href }
 })
 
 export default () => createReducer(
@@ -55,7 +57,8 @@ export default () => createReducer(
         const parent = content.document.getParent(first.key)
         return content.blocks.some(node => node.type === 'list-item') && parent && parent.type === list
       }) : []
-      const selectedEffects = [ ...activeMarks, ...activeBlocks, ...activeLists ]
+      const links = hasLink(content) ? [BLOCKS.LINK] : []
+      const selectedEffects = [ ...activeMarks, ...activeBlocks, ...activeLists, ...links ]
       return changeContent({ ...state, selectedEffects }, content)
     },
     [a.successfulSave]: (state, lastSave) => ({
@@ -69,19 +72,36 @@ export default () => createReducer(
     [a.toggleEffect]: (state, type) => {
       try {
         const selectedEffects = state.selectedEffects.includes(type) ?
-        state.selectedEffects.without_(type) :
-        [...state.selectedEffects, type]
-        if (['bold', 'italic', 'code'].includes(type)) {
-          const { value } = state.content.change().toggleMark(type)
-          return changeContent({ ...state, selectedEffects }, value)
+          state.selectedEffects.without_(type) :
+          [...state.selectedEffects, type]
+
+        const value = state.content
+        const change = value.change()
+        const { document } = value
+        const hasBlock = type => value.blocks.some(node => node.type === type)
+        const isList = hasBlock('list-item')
+
+        if (type === 'link') {
+          // no way to make list a link
+          if (isList) return state
+
+          if (hasLink(value)) {
+            change.call(unwrapLink)
+            return changeContent({ ...state, selectedEffects }, change.value)
+          }
+          // no way to create link when nothing is selected
+          if (!value.selection.isExpanded) return state
+          return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
+        }
+
+        if (Object(MARKS).values().includes(type)) {
+          return changeContent(
+            { ...state, selectedEffects },
+            change.toggleMark(type)
+          )
         } else {
-          const value = state.content
-          const change = value.change()
-          const { document } = value
-          const hasBlock = type => value.blocks.some(node => node.type === type)
           if (!['bulleted-list', 'numbered-list'].includes(type)) {
             const isActive = hasBlock(type)
-            const isList = hasBlock('list-item')
       
             if (isList) {
               change
@@ -93,7 +113,6 @@ export default () => createReducer(
             }
           } else {
             // Handle the extra wrapping required for list buttons.
-            const isList = hasBlock('list-item')
             const isType = value.blocks.some(block => !!document.getClosest(block.key, parent => parent.type === type))
       
             if (isList && isType) {
@@ -118,6 +137,16 @@ export default () => createReducer(
         console.info('fail to execute effect')
         return state
       }
+    },
+    [a.exitLinkPrompt]: state => ({ ...state, linkPromptOpen: false, link: '', selectedEffects: state.selectedEffects.without_(BLOCKS.LINK) }),
+    [a.changeLink]: (state, link) => ({ ...state, link }),
+    [a.submitLink]: state => {
+      if (!state.link) return ({ ...state, linkPromptOpen: false, selectedEffects: state.selectedEffects.without_(BLOCKS.LINK) })
+      
+      const change = state.content.change()
+      change.call(wrapLink, state.link)
+
+      return changeContent({ ...state, linkPromptOpen: false, link: '', }, change.value)
     }
   },
   getDefaultState()

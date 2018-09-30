@@ -49,17 +49,18 @@ const Mark = ({ children, mark: { type }, attributes }) => switchCase(
   () => null
 )
 
-const Node = ({ attributes, children, node: { type } }) => switchCase(
+const Node = ({ attributes, children, node }) => switchCase(
   {
     [BLOCKS.QUOTE]: () => <Quote {...attributes}>{children}</Quote>,
     [BLOCKS.HEADING_ONE]: () => <HeadingOne {...attributes}>{children}</HeadingOne>,
     [BLOCKS.HEADING_TWO]: () => <HeadingTwo {...attributes}>{children}</HeadingTwo>,
     [BLOCKS.BULLETED_LIST]: () => <BulletedList {...attributes}>{children}</BulletedList>,
     [BLOCKS.NUMBERED_LIST]: () => <NumberedList {...attributes}>{children}</NumberedList>,
+    [BLOCKS.LINK]: () => <a {...attributes} href={node.data.get('href')}>{children}</a>,
     'list-item': () => <li {...attributes}>{children}</li>
     // to: link
   },
-  type,
+  node.type,
   () => null,
 )
 

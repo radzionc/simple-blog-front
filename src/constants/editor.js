@@ -8,6 +8,7 @@ export const MARKS = {
 }
 
 export const BLOCKS = {
+  LINK: 'link',
   HEADING_ONE: 'heading-one',
   HEADING_TWO: 'heading-two',
   NUMBERED_LIST: 'numbered-list',
