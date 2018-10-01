@@ -1,4 +1,4 @@
-export const MAX_TITLE_LENGTH = 20
+export const MAX_TITLE_LENGTH = 60
 export const SAVE_PERIOD = 4000
 export const TAGS_LIMIT = 5
 

@@ -19,7 +19,6 @@ export function* startApp() {
   window.history.pushState({}, '', '')
 
   function* ticking() {
-    // const { navigation: { page } } = yield select()
     yield put(tickAction())
     yield call(delay, TICK)
     yield* ticking()
@@ -39,8 +38,8 @@ export function* exitPage({ payload }) {
 export function* tick() {
   const { navigation: { page } } = yield select()
   if (page === 'editor') {
-    const { editor: { lastSave, lastEdit } } = yield select()
-    if (lastEdit && lastEdit > lastSave && Date.now() - lastSave > SAVE_PERIOD) {
+    const { editor: { lastSave, lastEdit, requestProcess } } = yield select()
+    if (!requestProcess && lastEdit && lastEdit > lastSave && Date.now() - lastSave > SAVE_PERIOD) {
       yield put(save())
     }
   }

@@ -17,6 +17,8 @@ const getDefaultState = () => ({
       ],
     },
   }),
+  storyCreationRequested: false,
+  storyId: undefined,
   lastSave: Date.now(),
   lastEdit: undefined,
   selectedEffects: [],
@@ -25,7 +27,8 @@ const getDefaultState = () => ({
   link: '',
   tags: [],
   tagsMenuOpen: false,
-  editingTag: ''
+  editingTag: '',
+  requestProcess: false
 })
 
 const changeContent = (state, content) => ({
@@ -68,9 +71,18 @@ export default () => createReducer(
       const selectedEffects = [ ...activeMarks, ...activeBlocks, ...activeLists, ...links ]
       return changeContent({ ...state, selectedEffects }, content)
     },
-    [a.successfulSave]: (state, lastSave) => ({
+    [a.save]: (state) => ({
       ...state,
-      lastSave
+      requestProcess: true,
+    }),
+    [a.successfulSave]: (state) => ({
+      ...state,
+      lastSave: Date.now(),
+      requestProcess: false
+    }),
+    [a.successfulCreation]: (state, storyId) => ({
+      ...state,
+      storyId
     }),
     [tick]: (state) => ({
       ...state,
@@ -103,10 +115,10 @@ export default () => createReducer(
         if (type === BLOCKS.IMAGE) {
           return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
         }
-        if (Object(MARKS).values().includes(type)) {
+        if (Object.values(MARKS).includes(type)) {
           return changeContent(
             { ...state, selectedEffects },
-            change.toggleMark(type)
+            change.toggleMark(type).value
           )
         } else {
           if (!['bulleted-list', 'numbered-list'].includes(type)) {
@@ -143,6 +155,7 @@ export default () => createReducer(
           return changeContent({ ...state, selectedEffects }, change.value)
         }
       } catch(err) {
+        console.log(err)
         console.info('fail to execute effect')
         return state
       }
