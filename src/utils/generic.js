@@ -61,7 +61,11 @@ export const logArgs = func => (...args) => {
 }
 
 export const switchCase = (cases, key, defaultCase) => {
-  // console.log(key)
   const func = cases[key]
   return func ? func() : defaultCase()
+}
+
+export const noPropogation = func => e => {
+  e.stopPropagation()
+  func()
 }

@@ -51,6 +51,7 @@ const Navbar = ({ to, unauthorizeUser, dropdownOpen, dropdownAnchor, toggleDropd
           >
             <MenuItem onClick={itemHandler(unauthorizeUser)}>Sign out</MenuItem>
             <MenuItem onClick={itemHandler(() => to('editor'))}>New story</MenuItem>
+            <MenuItem onClick={itemHandler(() => to('yourStories'))}>Stories</MenuItem>
           </Menu>
         </div>
       </StyledToolbar>

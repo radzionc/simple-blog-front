@@ -17,3 +17,6 @@ export const editTag = createAction()
 export const submitTag = createAction()
 export const deleteTag = createAction()
 export const publish = createAction()
+
+export const receiveStoryForEdit = createAction()
+export const clear = createAction()

@@ -4,9 +4,27 @@ import { delay } from 'redux-saga';
 import { TICK } from '../constants/generic'
 import { tick as tickAction } from '../actions/generic';
 import { SAVE_PERIOD } from '../constants/editor';
-import { save } from '../actions/editor';
+import { save, clear as clearEditor } from '../actions/editor';
+import { clear as clearYourStories } from '../actions/your-stories'
+import { receiveStory } from '../actions/story'
+import { selectTab } from '../actions/your-stories';
+import { callWith401Handle } from './api'
+import { get } from '../utils/api'
+import { STORY_DETAIL } from '../constants/api';
+import { removeStateReceivedFrom } from '../actions/cache';
 
-const enters = { }
+
+const enters = {
+  yourStories: function*(state) {
+    yield put(selectTab(state.yourStories.tab))
+  },
+  story: function*(state) {
+    const storyId = state.navigation.storyId
+    const story = yield callWith401Handle(get, STORY_DETAIL(storyId))
+    console.log(story)
+    yield put(receiveStory(story))
+  }
+}
 
 export function* enterPage() {
   const state = yield select()
@@ -26,7 +44,17 @@ export function* startApp() {
   yield* ticking()
 }
 
-const exits = {}
+const exits = {
+  editor: function* () {
+    yield put(clearEditor())
+  },
+  yourStories: function* () {
+    yield put(clearYourStories())
+  },
+  story: function* () {
+    yield put(removeStateReceivedFrom('story'))
+  }
+}
 
 export function* exitPage({ payload }) {
   const state = yield select()

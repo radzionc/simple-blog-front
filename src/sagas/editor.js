@@ -4,6 +4,7 @@ import { CREATE_STORY, UPDATE_STORY, PUBLISH_STORY } from '../constants/api'
 import { post, patch } from '../utils/api'
 import { callWith401Handle } from './api'
 import { successfulSave, successfulCreation } from "../actions/editor";
+import { toStory } from '../actions/navigation'
 
 export function* storyUpdatePayload() {
   const { editor: { title, content, tags } } = yield select()
@@ -33,4 +34,5 @@ export function* publish() {
     yield save()
   }
   yield callWith401Handle(post, PUBLISH_STORY(storyId))
+  yield put(toStory(storyId))
 }

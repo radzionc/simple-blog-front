@@ -1,11 +1,12 @@
 import { createReducer } from 'redux-act'
-import { to } from '../actions/navigation'
+import * as a from '../actions/navigation'
 
 import { unauthorizeUser } from '../actions/auth'
 import { loggedIn } from '../utils/auth'
 
 const getDefaultState = page => ({
   page,
+  storyId: undefined
 })
 
 const forward = (state, page) => ({ state, page })
@@ -13,7 +14,8 @@ const forward = (state, page) => ({ state, page })
 export default _ =>
   createReducer(
     {
-      [to]: forward,
+      [a.to]: forward,
+      [a.toStory]: (state, storyId) => ({ ...state, page: 'story', storyId }),
       [unauthorizeUser]: state => forward(state, 'login'),
     },
     getDefaultState(process.env.REACT_APP_MOCK

@@ -165,7 +165,16 @@ export default () => createReducer(
     [a.deleteTag]: (state, tag) => ({
       ...state,
       tags: state.tags.without_(tag)
-    })
+    }),
+    [a.receiveStoryForEdit]: (state, story) => ({
+      ...getDefaultState(),
+      storyId: story.id,
+      title: story.title,
+      content: Value.fromJSON(JSON.parse(story.content)),
+      tags: story.tags,
+      lastSave: Date.now(),
+    }),
+    [a.clear]: () => getDefaultState()
   },
   getDefaultState()
 )

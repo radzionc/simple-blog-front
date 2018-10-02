@@ -6,6 +6,8 @@ import auth from './auth'
 import cache from './cache'
 import navbar from './navbar'
 import editor from './editor'
+import yourStories from './your-stories'
+import story from './story'
 
 import { unauthorizeUser } from '../actions/auth'
 import { receiveMockState } from '../actions/mock'
@@ -20,7 +22,9 @@ const getNewReducer = _ =>
       cache,
       form,
       navbar,
-      editor
+      editor,
+      yourStories,
+      story
     }).reduce(
       (acc, [key, value]) => ({
         ...acc,

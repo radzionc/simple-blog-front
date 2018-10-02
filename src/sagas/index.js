@@ -9,11 +9,15 @@ import * as authSagas from './auth'
 import * as editorActions from '../actions/editor'
 import * as editorSagas from './editor'
 
+import * as yourStoriesActions from '../actions/your-stories'
+import * as yourStoriesSagas from './your-stories'
+
 export default function* saga() {
   const relations = [
     [genericActions, genericSagas],
     [authActions, authSagas],
-    [editorActions, editorSagas]
+    [editorActions, editorSagas],
+    [yourStoriesActions, yourStoriesSagas]
   ]
 
   for (const [actions, sagas] of relations) {
