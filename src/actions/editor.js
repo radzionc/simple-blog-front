@@ -1,6 +1,7 @@
 import { createAction } from 'redux-act'
 
 export const changeTitle = createAction()
+
 export const toggleEffect = createAction()
 export const save = createAction()
 export const changeContent = createAction()

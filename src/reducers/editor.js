@@ -17,24 +17,21 @@ const getDefaultState = () => ({
       ],
     },
   }),
-  storyCreationRequested: false,
   storyId: undefined,
   lastSave: Date.now(),
   lastEdit: undefined,
-  selectedEffects: [],
   changesSaved: true,
-  linkPromptOpen: false,
+  linkPrompt: undefined,
   link: '',
   tags: [],
   tagsMenuOpen: false,
   editingTag: '',
-  requestProcess: false
+  saving: false,
 })
 
 const changeContent = (state, content) => ({
   ...state,
   content,
-  // to: hack
   lastEdit: JSON.stringify(state.content) === JSON.stringify(content) ? state.lastEdit : Date.now()
 })
 
@@ -57,32 +54,20 @@ export default () => createReducer(
       title: title.slice(0, MAX_TITLE_LENGTH),
       lastEdit: Date.now()
     }),
-    [a.changeContent]: (state, content) => {
-      const activeMarks = content.activeMarks.map(mark => mark.type).toArray()
-      const lists = ['numbered-list', 'bulleted-list']
-      const activeBlocks = content.blocks.map(block => block.type).toArray().without_(...lists)
-
-      const first = content.blocks.first()
-      const activeLists = first ? lists.filter(list => {
-        const parent = content.document.getParent(first.key)
-        return content.blocks.some(node => node.type === 'list-item') && parent && parent.type === list
-      }) : []
-      const links = hasLink(content) ? [BLOCKS.LINK] : []
-      const selectedEffects = [ ...activeMarks, ...activeBlocks, ...activeLists, ...links ]
-      return changeContent({ ...state, selectedEffects }, content)
-    },
+    [a.changeContent]: changeContent,
     [a.save]: (state) => ({
       ...state,
-      requestProcess: true,
+      saving: true
     }),
     [a.successfulSave]: (state) => ({
       ...state,
       lastSave: Date.now(),
-      requestProcess: false
+      saving: false
     }),
     [a.successfulCreation]: (state, storyId) => ({
       ...state,
-      storyId
+      storyId,
+      saving: false
     }),
     [tick]: (state) => ({
       ...state,
@@ -90,10 +75,6 @@ export default () => createReducer(
     }),
     [a.toggleEffect]: (state, type) => {
       try {
-        const selectedEffects = state.selectedEffects.includes(type) ?
-          state.selectedEffects.without_(type) :
-          [...state.selectedEffects, type]
-
         const value = state.content
         const change = value.change()
         const { document } = value
@@ -106,18 +87,18 @@ export default () => createReducer(
 
           if (hasLink(value)) {
             change.call(unwrapLink)
-            return changeContent({ ...state, selectedEffects }, change.value)
+            return changeContent(state, change.value)
           }
           // no way to create link when nothing is selected
           if (!value.selection.isExpanded) return state
-          return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
+          return changeContent({ ...state, linkPrompt: BLOCKS.LINK }, change.value)
         }
         if (type === BLOCKS.IMAGE) {
-          return changeContent({ ...state, selectedEffects, linkPromptOpen: true }, change.value)
+          return changeContent({ ...state, linkPrompt: BLOCKS.IMAGE }, change.value)
         }
         if (Object.values(MARKS).includes(type)) {
           return changeContent(
-            { ...state, selectedEffects },
+            state,
             change.toggleMark(type).value
           )
         } else {
@@ -152,22 +133,21 @@ export default () => createReducer(
             }
           }
       
-          return changeContent({ ...state, selectedEffects }, change.value)
+          return changeContent(state, change.value)
         }
       } catch(err) {
-        console.log(err)
         console.info('fail to execute effect')
         return state
       }
     },
-    [a.exitLinkPrompt]: state => ({ ...state, linkPromptOpen: false, link: '', selectedEffects: state.selectedEffects.without_(BLOCKS.LINK) }),
+    [a.exitLinkPrompt]: state => ({ ...state, linkPrompt: undefined, link: '' }),
     [a.changeLink]: (state, link) => ({ ...state, link }),
     [a.submitLink]: state => {
-      if (!state.link) return ({ ...state, linkPromptOpen: false, selectedEffects: state.selectedEffects.without_(BLOCKS.LINK, BLOCKS.IMAGE) })
+      if (!state.link) return ({ ...state, linkPrompt: undefined })
 
       const change = state.content.change()
-      change.call(state.selectedEffects.includes(BLOCKS.LINK) ? wrapLink : insertImage, state.link)
-      return changeContent({ ...state, linkPromptOpen: false, link: '', }, change.value)
+      change.call(state.linkPrompt === BLOCKS.LINK ? wrapLink : insertImage, state.link)
+      return changeContent({ ...state, linkPrompt: undefined, link: '', }, change.value)
     },
     [a.toggleTagsMenu]: state => ({
       ...state,

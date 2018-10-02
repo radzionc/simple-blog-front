@@ -38,8 +38,8 @@ export function* exitPage({ payload }) {
 export function* tick() {
   const { navigation: { page } } = yield select()
   if (page === 'editor') {
-    const { editor: { lastSave, lastEdit, requestProcess } } = yield select()
-    if (!requestProcess && lastEdit && lastEdit > lastSave && Date.now() - lastSave > SAVE_PERIOD) {
+    const { editor: { lastSave, lastEdit, saving } } = yield select()
+    if (!saving && lastEdit && lastEdit > lastSave && Date.now() - lastSave > SAVE_PERIOD) {
       yield put(save())
     }
   }

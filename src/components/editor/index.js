@@ -33,7 +33,7 @@ const TopLine = styled.div`
 export default connectTo(
   state => state.editor,
   {},
-  ({ linkPromptOpen, tagsMenuOpen }) => {
+  ({ linkPrompt, tagsMenuOpen }) => {
     return (
       <Page style={{ padding: `0 ${SIDE_PADDING}px` }}>
         <TopLine>
@@ -45,7 +45,7 @@ export default connectTo(
           <Editor/>
         </Container>
         <EffectsMenu/>
-        { linkPromptOpen && <LinkDialog/> }
+        { linkPrompt && <LinkDialog/> }
         { tagsMenuOpen && <TagsDialog/> }
       </Page>
     )

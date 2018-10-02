@@ -15,10 +15,10 @@ export function* storyUpdatePayload() {
 }
 
 export function* save() {
-  const { editor: { storyId, storyCreationRequested } } = yield select()
+  const { editor: { storyId } } = yield select()
   const payload = yield storyUpdatePayload()
-  if (!storyId && !storyCreationRequested) {
-    console.log(payload)
+  if (!storyId) {
+    
     const { storyId } = yield callWith401Handle(post, CREATE_STORY, payload)
     yield put(successfulCreation(storyId))
   } else {

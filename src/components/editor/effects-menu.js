@@ -35,7 +35,16 @@ const Effect = styled(MenuItem)`
 export default connectTo(
   state => state.editor,
   actions,
-  ({ selectedEffects, toggleEffect }) => {
+  ({ toggleEffect, content, linkPrompt }) => {
+    const isSelected = type => {
+      if (Object.values(MARKS).includes(type)) {
+        return content.activeMarks.some(mark => mark.type === type)
+      }
+      if (type === BLOCKS.IMAGE) return linkPrompt === BLOCKS.IMAGE
+      if (type === BLOCKS.LINK) return content.inlines.some(inline => inline.type === BLOCKS.LINK)
+      
+      return content.blocks.some(node => node.type === type)
+    }
     const items = [
       [faBold, MARKS.BOLD],
       [faItalic, MARKS.ITALIC],
@@ -47,10 +56,10 @@ export default connectTo(
       [faListOl, BLOCKS.NUMBERED_LIST],
       [faListUl, BLOCKS.BULLETED_LIST],
       [faQuoteRight, BLOCKS.QUOTE],
-    ].map(([ icon, effect]) => (
+    ].map(([ icon, effect ]) => (
       <Effect
         key={effect}
-        selected={selectedEffects.includes(effect)}
+        selected={isSelected(effect)}
         onClick={() => toggleEffect(effect)}
       >
         <FontAwesomeIcon
