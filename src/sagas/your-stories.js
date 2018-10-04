@@ -23,7 +23,6 @@ export function* edit({ payload }) {
   const { yourStories: { drafts, published } } = yield select()
 
   const story = [drafts, published].withoutUndef_().flatten_().find(story => story.id === payload)
-  console.log(story.content)
   yield put(receiveStoryForEdit(story))
   yield put(to('editor'))
 }

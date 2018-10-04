@@ -21,7 +21,6 @@ const enters = {
   story: function*(state) {
     const storyId = state.navigation.storyId
     const story = yield callWith401Handle(get, STORY_DETAIL(storyId))
-    console.log(story)
     yield put(receiveStory(story))
   }
 }

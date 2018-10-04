@@ -29,11 +29,20 @@ const getDefaultState = () => ({
   saving: false,
 })
 
-const changeContent = (state, content) => ({
-  ...state,
-  content,
-  lastEdit: JSON.stringify(state.content) === JSON.stringify(content) ? state.lastEdit : Date.now()
-})
+const updateLastEdit = (oldState, newState) => {
+  const sameContent = JSON.stringify(oldState.content) === JSON.stringify(newState.content)
+  const sameTags = oldState.tags.sameAs_(newState.tags)
+  const sameTitle = oldState.title === newState.title
+  return {
+    ...newState,
+    lastEdit: [sameContent, sameTags, sameTitle].allTrue_() ? oldState.lastEdit : Date.now()
+  }
+}
+
+const willUpdateLastEdit = func => (oldState, payload) => {
+  const newState = func(oldState, payload)
+  return updateLastEdit(oldState, newState)
+}
 
 const hasLink = value => value.inlines.some(inline => inline.type === BLOCKS.LINK)
 const unwrapLink = change => change.unwrapInline(BLOCKS.LINK)
@@ -49,12 +58,14 @@ const insertImage = (change, src) => change.insertBlock({
 
 export default () => createReducer(
   {
-    [a.changeTitle]: (state, title) => ({
+    [a.changeTitle]: willUpdateLastEdit((state, title) => ({
       ...state,
       title: title.slice(0, MAX_TITLE_LENGTH),
-      lastEdit: Date.now()
-    }),
-    [a.changeContent]: changeContent,
+    })),
+    [a.changeContent]: willUpdateLastEdit((state, content) => ({
+      ...state,
+      content
+    })),
     [a.save]: (state) => ({
       ...state,
       saving: true
@@ -82,24 +93,22 @@ export default () => createReducer(
         const isList = hasBlock('list-item')
 
         if (type === BLOCKS.LINK) {
-          // no way to make list a link
-          if (isList) return state
 
           if (hasLink(value)) {
             change.call(unwrapLink)
-            return changeContent(state, change.value)
+            return updateLastEdit(state, { ...state, content: change.value })
           }
           // no way to create link when nothing is selected
           if (!value.selection.isExpanded) return state
-          return changeContent({ ...state, linkPrompt: BLOCKS.LINK }, change.value)
+          return updateLastEdit(state, { ...state, content: change.value, linkPrompt: BLOCKS.LINK })
         }
         if (type === BLOCKS.IMAGE) {
-          return changeContent({ ...state, linkPrompt: BLOCKS.IMAGE }, change.value)
+          return updateLastEdit(state, { ...state, content: change.value, linkPrompt: BLOCKS.IMAGE })
         }
         if (Object.values(MARKS).includes(type)) {
-          return changeContent(
+          return updateLastEdit(
             state,
-            change.toggleMark(type).value
+            { ...state, content: change.toggleMark(type).value }
           )
         } else {
           if (!['bulleted-list', 'numbered-list'].includes(type)) {
@@ -133,7 +142,7 @@ export default () => createReducer(
             }
           }
       
-          return changeContent(state, change.value)
+          return updateLastEdit(state, { ...state, content: change.value })
         }
       } catch(err) {
         console.info('fail to execute effect')
@@ -147,7 +156,7 @@ export default () => createReducer(
 
       const change = state.content.change()
       change.call(state.linkPrompt === BLOCKS.LINK ? wrapLink : insertImage, state.link)
-      return changeContent({ ...state, linkPrompt: undefined, link: '', }, change.value)
+      return updateLastEdit(state, { ...state, content: change.value, linkPrompt: undefined, link: '', })
     },
     [a.toggleTagsMenu]: state => ({
       ...state,
@@ -157,15 +166,15 @@ export default () => createReducer(
       ...state,
       editingTag
     }),
-    [a.submitTag]: state => ({
+    [a.submitTag]: willUpdateLastEdit(state => ({
       ...state,
       tags: (state.editingTag ? [ ...state.tags, state.editingTag] : state.tags).uniq_(),
       editingTag: '',
-    }),
-    [a.deleteTag]: (state, tag) => ({
+    })),
+    [a.deleteTag]: willUpdateLastEdit((state, tag) => ({
       ...state,
       tags: state.tags.without_(tag)
-    }),
+    })),
     [a.receiveStoryForEdit]: (state, story) => ({
       ...getDefaultState(),
       storyId: story.id,

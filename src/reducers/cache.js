@@ -10,7 +10,8 @@ export const getDefaultState = _ => ({
     register: true,
     editor: true,
     yourStories: false,
-    story: false
+    story: false,
+    start: true
   }
 })
 

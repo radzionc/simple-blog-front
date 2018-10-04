@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Paper } from '@material-ui/core'
 
 import Page from '../page-wrapper'
 import EffectsMenu from './effects-menu'
@@ -11,14 +10,9 @@ import Editor from './editor'
 import LinkDialog from './link-dialog'
 import TagsDialog from './tags-dialog'
 import { connectTo } from '../../utils/generic';
+import ContentContainer from '../content-container'
 
 const SIDE_PADDING = 50;
-
-const Container = styled(Paper)`
-  margin: ${SIDE_PADDING}px;
-  min-height: 320px;
-  padding: 20px;
-`
 
 const TopLine = styled.div`
   width: 100%;
@@ -40,10 +34,10 @@ export default connectTo(
           <Save/>
           <Publish/>
         </TopLine>
-        <Container>
+        <ContentContainer>
           <Title/>
           <Editor/>
-        </Container>
+        </ContentContainer>
         <EffectsMenu/>
         { linkPrompt && <LinkDialog/> }
         { tagsMenuOpen && <TagsDialog/> }

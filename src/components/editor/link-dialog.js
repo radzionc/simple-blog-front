@@ -12,10 +12,10 @@ import * as actions from '../../actions/editor'
 export default connectTo(
   state => state.editor,
   actions,
-  ({ changeLink, exitlinkPrompt, submitLink }) => (
+  ({ changeLink, exitLinkPrompt, submitLink }) => (
     <Dialog
       open={true}
-      onClose={exitlinkPrompt}
+      onClose={exitLinkPrompt}
       aria-labelledby="form-dialog-link"
     >
       <DialogTitle id="form-dialog-link">Enter the URL</DialogTitle>
@@ -26,12 +26,13 @@ export default connectTo(
           id="url"
           label="URL"
           type="url"
+          style={{ minWidth: 320 }}
           fullWidth
           onChange={({ target: { value } }) => changeLink(value)}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={exitlinkPrompt} color='primary'>
+        <Button onClick={exitLinkPrompt} color='primary'>
           Cancel
         </Button>
         <Button onClick={submitLink} color='primary'>

@@ -1,6 +1,5 @@
 import React from 'react'
 import { AppBar, Tabs, Tab } from '@material-ui/core'
-import { DateTime } from 'luxon'
 import styled from 'styled-components'
 
 import { connectTo } from '../../utils/generic'
@@ -8,6 +7,7 @@ import * as actions from '../../actions/your-stories'
 import StoryCard from './story-card'
 import Page from '../page-wrapper'
 import { toStory } from '../../actions/navigation';
+import { timestampForHuman } from '../../utils/time';
 
 const StoriesContainer = styled.div`
   margin: 40px;
@@ -34,7 +34,7 @@ export default connectTo(
         <StoriesContainer>
           { stories && stories.map((story, number) => {
             const dateValue = story[tab === 'published' ? 'publishTime' : 'lastEditTime']
-            const date = DateTime.fromMillis(dateValue * 1000).toLocaleString({ month: 'long', day: 'numeric' })
+            const date = timestampForHuman(dateValue)
             const dateText = `${tab === 'published' ? 'Published on' : 'Last edit'} ${date}`
             return (
               <StoryCard

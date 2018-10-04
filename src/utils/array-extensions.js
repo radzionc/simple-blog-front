@@ -155,6 +155,18 @@ const extensions = [
     function() {
       return this.filter(el => el !== undefined)
     }
+  ],
+  [
+    'sameAs_',
+    function(other) {
+      return _.isEqual(this.sort(), other.sort())
+    }
+  ],
+  [
+    'allTrue_',
+    function() {
+      return this.every(v => v)
+    }
   ]
 ]
 for (const [name, func] of extensions) {

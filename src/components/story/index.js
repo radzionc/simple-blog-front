@@ -1,30 +1,63 @@
 import React from 'react'
 import { Editor } from 'slate-react'
+import { Typography } from '@material-ui/core'
+import styled from 'styled-components'
+import { Chip } from '@material-ui/core'
 
 import { connectTo } from '../../utils/generic';
 
+import ContentContainer from '../content-container'
 import Mark from '../editor/mark'
 import Node from '../editor/node'
 import Page from '../page-wrapper'
+import { timestampForHuman } from '../../utils/time';
+
+const Info = styled.div`
+  margin: 20px;
+`
+
+const Chips = styled.div`
+  display: flex;
+  flex-direction: row;
+`
 
 export default connectTo(
   state => state.story,
   {},
-  ({ title, content, publishTime, ownerUsername }) => {
+  ({ title, content, publishTime, ownerUsername, tags }) => {
     return (
       <Page>
-        <p>{ownerUsername}</p>
-        <p>{publishTime}</p>
-        <h1>{title}</h1>
-        { content && (
-          <Editor
-            readOnly
-            style={{ paddingTop: '20px', height: '100%' }}
-            value={content}
-            renderNode={Node}
-            renderMark={Mark}
-          />
-        )}
+        <ContentContainer>
+          <Info>
+            <Typography variant="subheading" gutterBottom>
+              author: {ownerUsername}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {timestampForHuman(publishTime)}
+            </Typography>
+          </Info>
+          <Typography variant="display2" gutterBottom>{title}</Typography>
+          { content && (
+            <Editor
+              readOnly
+              style={{ paddingTop: '20px' }}
+              value={content}
+              renderNode={Node}
+              renderMark={Mark}
+            />
+          )}
+          <Chips>
+            {
+              tags.map(tag => (
+                <Chip
+                  label={tag}
+                  style={{ margin: 10 }}
+                  key={tag}
+                />
+              ))
+            }
+          </Chips>
+        </ContentContainer>
       </Page>
     )
   }
