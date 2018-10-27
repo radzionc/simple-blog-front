@@ -1,6 +1,5 @@
 import React from 'react'
 import { AppBar, Tabs, Tab } from '@material-ui/core'
-import styled from 'styled-components'
 
 import { connectTo } from '../../utils/generic'
 import * as actions from '../../actions/your-stories'
@@ -9,12 +8,7 @@ import Page from '../page-wrapper'
 import { toStory } from '../../actions/navigation';
 import { timestampForHuman } from '../../utils/time';
 
-const StoriesContainer = styled.div`
-  margin: 40px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`
+import StoriesContainer from '../stories-container'
 
 export default connectTo(
   state => state.yourStories,

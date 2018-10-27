@@ -20,6 +20,6 @@ export default _ =>
     },
     getDefaultState(process.env.REACT_APP_MOCK
         ? undefined
-        : loggedIn() ? 'start' : 'login'
+        : loggedIn() ? 'stories' : 'login'
     )
   )
