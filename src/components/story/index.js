@@ -76,7 +76,7 @@ export default connectTo(
               disabled={userId === ownerId}
               onClick={toggleLike}
             >
-              {liked ? <Favorite/> : <FavoriteBorder/>}
+              {liked ? <Favorite color='secondary' /> : <FavoriteBorder color='secondary'/>}
             </IconButton>
             <LikesNumber>{likesNumber}</LikesNumber>
           </Likes>
