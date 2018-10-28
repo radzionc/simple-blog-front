@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components'
-import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button, Paper, Chip } from '@material-ui/core';
+import { TextField, Dialog, DialogActions, DialogContent, DialogTitle, Button, Paper } from '@material-ui/core';
 
 import { connectTo } from '../../utils/generic'
 import * as actions from '../../actions/editor'
 import { TAGS_LIMIT } from '../../constants/editor';
+import Tag from '../tag'
 
 const InputLine = styled.div`
   display: flex;
@@ -54,8 +55,7 @@ export default connectTo(
         <ChipsContainer>
           {
             tags.map(tag => (
-              <Chip
-                style={{ margin: 10 }}
+              <Tag
                 key={tag}
                 label={tag}
                 onDelete={() => deleteTag(tag)}

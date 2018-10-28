@@ -3,6 +3,7 @@ import { createReducer } from 'redux-act'
 import * as a from '../actions/cache'
 import { receiveStoriesForTab, clear as clearYourStories } from '../actions/your-stories'
 import { receiveStory } from '../actions/story';
+import { receiveStories } from '../actions/stories'
 
 export const getDefaultState = _ => ({
   stateReceived: {
@@ -11,7 +12,7 @@ export const getDefaultState = _ => ({
     editor: true,
     yourStories: false,
     story: false,
-    start: true
+    stories: false
   }
 })
 
@@ -50,6 +51,7 @@ export default _ =>
       [receiveStoriesForTab]: state => changeStateReceived(state, 'yourStories', true),
       [clearYourStories]: state => changeStateReceived(state, 'yourStories', false),
       [receiveStory]: state => changeStateReceived(state, 'story', true),
+      [receiveStories]: state => changeStateReceived(state, 'stories', true)
     },
     getDefaultState()
   )

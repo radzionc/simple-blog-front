@@ -1,1 +1,1 @@
-export const PAGES_WITH_NAVBAR = ['start', 'editor', 'yourStories', 'story']
+export const PAGES_WITH_NAVBAR = ['stories', 'editor', 'yourStories', 'story']

@@ -2,7 +2,6 @@ import React from 'react'
 import { Editor } from 'slate-react'
 import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import { Chip } from '@material-ui/core'
 
 import { connectTo } from '../../utils/generic';
 
@@ -10,6 +9,7 @@ import ContentContainer from '../content-container'
 import Mark from '../editor/mark'
 import Node from '../editor/node'
 import Page from '../page-wrapper'
+import Tag from '../tag'
 import { timestampForHuman } from '../../utils/time';
 
 const Info = styled.div`
@@ -49,9 +49,8 @@ export default connectTo(
           <Chips>
             {
               tags.map(tag => (
-                <Chip
+                <Tag
                   label={tag}
-                  style={{ margin: 10 }}
                   key={tag}
                 />
               ))

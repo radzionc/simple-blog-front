@@ -7,10 +7,11 @@ import { SAVE_PERIOD } from '../constants/editor';
 import { save, clear as clearEditor } from '../actions/editor';
 import { clear as clearYourStories } from '../actions/your-stories'
 import { receiveStory } from '../actions/story'
+import { receiveStories } from '../actions/stories'
 import { selectTab } from '../actions/your-stories';
 import { callWith401Handle } from './api'
 import { get } from '../utils/api'
-import { STORY_DETAIL } from '../constants/api';
+import { STORY_DETAIL, STORIES } from '../constants/api';
 import { removeStateReceivedFrom } from '../actions/cache';
 
 
@@ -22,6 +23,10 @@ const enters = {
     const storyId = state.navigation.storyId
     const story = yield callWith401Handle(get, STORY_DETAIL(storyId))
     yield put(receiveStory(story))
+  },
+  stories: function*(state) {
+    const { stories } = yield callWith401Handle(get, STORIES)
+    yield put(receiveStories(stories))
   }
 }
 

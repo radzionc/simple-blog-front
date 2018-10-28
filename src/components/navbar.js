@@ -25,7 +25,7 @@ const Navbar = ({ to, unauthorizeUser, dropdownOpen, dropdownAnchor, toggleDropd
   return (
     <AppBar position='static'>
       <StyledToolbar>
-        <Logo onClick={() => to('start')}/>
+        <Logo onClick={() => to('stories')}/>
         <div>
           <IconButton
             aria-owns={dropdownOpen ? 'menu-appbar' : null}
