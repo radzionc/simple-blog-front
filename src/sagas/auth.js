@@ -19,5 +19,5 @@ const authSaga = (url, thanGoTo) =>
     }
   }
 
-export const submitLogin = authSaga(LOGIN, 'start')
-export const submitRegister = authSaga(REGISTER, 'start')
+export const submitLogin = authSaga(LOGIN, 'stories')
+export const submitRegister = authSaga(REGISTER, 'stories')
