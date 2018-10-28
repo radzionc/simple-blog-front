@@ -1,6 +1,7 @@
 import React from 'react'
 import { Editor } from 'slate-react'
-import { Typography } from '@material-ui/core'
+import { Typography, IconButton } from '@material-ui/core'
+import { Favorite, FavoriteBorder } from '@material-ui/icons'
 import styled from 'styled-components'
 
 import { connectTo } from '../../utils/generic';
@@ -11,6 +12,7 @@ import Node from '../editor/node'
 import Page from '../page-wrapper'
 import Tag from '../tag'
 import { timestampForHuman } from '../../utils/time';
+import * as actions from '../../actions/story'
 
 const Info = styled.div`
   margin: 20px;
@@ -21,10 +23,23 @@ const Chips = styled.div`
   flex-direction: row;
 `
 
+const Likes = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const LikesNumber = styled.p`
+  margin-left: 10px;
+`
+
 export default connectTo(
-  state => state.story,
-  {},
-  ({ title, content, publishTime, ownerUsername, tags }) => {
+  state => ({
+    ...state.story,
+    userId: state.auth.id
+  }),
+  actions,
+  ({ title, content, publishTime, ownerUsername, ownerId, tags, userId, likesNumber, liked, toggleLike }) => {
     return (
       <Page>
         <ContentContainer>
@@ -56,6 +71,15 @@ export default connectTo(
               ))
             }
           </Chips>
+          <Likes>
+            <IconButton
+              disabled={userId === ownerId}
+              onClick={toggleLike}
+            >
+              {liked ? <Favorite/> : <FavoriteBorder/>}
+            </IconButton>
+            <LikesNumber>{likesNumber}</LikesNumber>
+          </Likes>
         </ContentContainer>
       </Page>
     )

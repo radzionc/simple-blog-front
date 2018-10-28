@@ -10,7 +10,9 @@ const getDefaultState = () => ({
   publishTime: undefined,
   titile: undefined,
   content: undefined,
-  tags: []
+  tags: [],
+  likesNumber: 0,
+  liked: false,
 })
  
 export default _ =>
@@ -21,6 +23,11 @@ export default _ =>
         ...story,
         storyId: story.id,
         content: Value.fromJSON(JSON.parse(story.content)),
+      }),
+      [a.toggleLike]: (state) => ({
+        ...state,
+        liked: !state.liked,
+        likesNumber: state.liked ? state.likesNumber - 1 : state.likesNumber + 1
       })
     },
     getDefaultState()
