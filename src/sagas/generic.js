@@ -13,6 +13,7 @@ import { callWith401Handle } from './api'
 import { get } from '../utils/api'
 import { STORY_DETAIL, STORIES } from '../constants/api';
 import { removeStateReceivedFrom } from '../actions/cache';
+import * as signalR from '@aspnet/signalr'
 
 
 const enters = {
@@ -39,6 +40,13 @@ export function* enterPage() {
 
 export function* startApp() {
   window.history.pushState({}, '', '')
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5000/notifications", { accessTokenFactory: () => localStorage.token })
+    .build()
+  connection.start()
+    .catch(console.error)
+  connection
+    .on("notification", console.log)
 
   function* ticking() {
     yield put(tickAction())
