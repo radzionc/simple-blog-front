@@ -1,8 +1,8 @@
-import { select, put, call } from 'redux-saga/effects'
-import { delay } from 'redux-saga';
+import { select, put, call, take, spawn } from 'redux-saga/effects'
+import { delay, eventChannel } from 'redux-saga';
 
 import { TICK } from '../constants/generic'
-import { tick as tickAction } from '../actions/generic';
+import { tick as tickAction, toggleSnackbar } from '../actions/generic';
 import { SAVE_PERIOD } from '../constants/editor';
 import { save, clear as clearEditor } from '../actions/editor';
 import { clear as clearYourStories } from '../actions/your-stories'
@@ -38,15 +38,46 @@ export function* enterPage() {
   if (entersFunc) yield entersFunc(state)
 }
 
-export function* startApp() {
-  window.history.pushState({}, '', '')
+function* listenNotifications() {
   const connection = new signalR.HubConnectionBuilder()
     .withUrl("http://localhost:5000/notifications", { accessTokenFactory: () => localStorage.token })
     .build()
-  connection.start()
-    .catch(console.error)
-  connection
-    .on("notification", console.log)
+    
+  let attempt = 0
+  let connected = false
+  while(attempt < 10 && !connected) {
+    attempt++
+    connected = true
+    try {
+      yield call(() => connection.start())
+      console.info('SignalR: successfully connected')
+    } catch(err) {
+      console.info(`SignalR: attempt ${attempt}: failed to connect`)
+      yield call(delay, 1000)
+      connected = false
+    }
+  }
+
+  if (connected) {
+    const getEventChannel = connection => eventChannel(emit => {
+      const handler = data => { emit(data) }
+      connection.on('notification', handler)
+      return () => { connection.off() }
+    })
+  
+    const channel = yield call(getEventChannel, connection)
+    while(true) {
+      const { notificationType, payload } = yield take(channel)
+      const message = `${payload.username} ${notificationType.toLowerCase()}d "${payload.storyTitle}"`
+      yield put(toggleSnackbar(message))
+    }
+  }
+}
+
+export function* startApp() {
+  window.history.pushState({}, '', '')
+  
+  yield spawn(listenNotifications)
 
   function* ticking() {
     yield put(tickAction())

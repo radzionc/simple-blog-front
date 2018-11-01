@@ -9,6 +9,7 @@ import editor from './editor'
 import yourStories from './your-stories'
 import story from './story'
 import stories from './stories'
+import generic from './generic'
 
 import { unauthorizeUser } from '../actions/auth'
 import { receiveMockState } from '../actions/mock'
@@ -26,7 +27,8 @@ const getNewReducer = _ =>
       editor,
       yourStories,
       story,
-      stories
+      stories,
+      generic
     }).reduce(
       (acc, [key, value]) => ({
         ...acc,

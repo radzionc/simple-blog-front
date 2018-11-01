@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import DocumentTitle from 'react-document-title'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components'
 
 import React from 'react'
@@ -7,7 +8,8 @@ import { HotKeys } from 'react-hotkeys'
 import { connectTo } from '../utils/generic'
 import { enterPage, exitPage } from '../actions/generic'
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from './snackbar'
+
 
 const Loading = styled.div`
   height: 100vh;
@@ -33,6 +35,7 @@ class PageWrapper extends React.Component {
       <DocumentTitle title={documentTitle}>
         {_.isEmpty(keyMap) ? (
           <div style={style}>
+            <Snackbar/>
             {children}
           </div>
         ) : (
@@ -42,6 +45,7 @@ class PageWrapper extends React.Component {
             handlers={handlers}
             focused
           >
+            <Snackbar/>
             {children}
           </HotKeys>
         )}

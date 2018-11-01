@@ -5,7 +5,8 @@ const getDefaultState = () => ({
   pageWidth: window.innerWidth,
   pageHeight: window.innerHeight,
   mouseX: 0,
-  mouseY: 0
+  mouseY: 0,
+  snackbarMessage: ''
 })
 
 export default () =>
@@ -20,7 +21,8 @@ export default () =>
         ...state,
         mouseX,
         mouseY
-      })
+      }),
+      [a.toggleSnackbar]: (state, snackbarMessage) => ({ ...state, snackbarMessage }),
     },
     getDefaultState()
   )
