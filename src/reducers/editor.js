@@ -5,6 +5,8 @@ import * as a from '../actions/editor'
 import { tick } from '../actions/generic'
 import { MAX_TITLE_LENGTH, MARKS, BLOCKS } from '../constants/editor';
 
+export const allStories = ({ drafts, published, shared }) => [drafts, published, shared ?  shared.map(s => s.drafts).flatten_() : undefined].withoutUndef_().flatten_()
+
 const getDefaultState = () => ({
   title: '',
   content: Value.fromJSON({
@@ -186,6 +188,13 @@ export default () => createReducer(
       tags: story.tags,
       lastSave: Date.now(),
       owner: story.owner
+    }),
+    [a.updateStory]: (state, { title, tags, lastEditTime, content }) => ({
+      ...state,
+      title,
+      tags,
+      lastSave: lastEditTime * 1000,
+      content: Value.fromJSON(JSON.parse(content)),
     }),
     [a.clear]: () => getDefaultState(),
     [a.toggleShareDialog]: state => ({
