@@ -29,6 +29,7 @@ const getDefaultState = () => ({
   userToShareName: '',
   editingTag: '',
   saving: false,
+  owner: true
 })
 
 const updateLastEdit = (oldState, newState) => {
@@ -184,6 +185,7 @@ export default () => createReducer(
       content: Value.fromJSON(JSON.parse(story.content)),
       tags: story.tags,
       lastSave: Date.now(),
+      owner: story.owner
     }),
     [a.clear]: () => getDefaultState(),
     [a.toggleShareDialog]: state => ({

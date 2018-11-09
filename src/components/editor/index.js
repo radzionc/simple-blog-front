@@ -38,16 +38,19 @@ const Space = styled.div`
 export default connectTo(
   state => state.editor,
   {},
-  ({ linkPrompt, tagsMenuOpen, shareDialogOpen }) => {
+  ({ linkPrompt, tagsMenuOpen, shareDialogOpen, owner }) => {
     return (
       <Page style={{ padding: `0 ${SIDE_PADDING}px` }}>
         <TopLine>
           <Save/>
-          <Right>
-            <Share/>
-            <Space/>
-            <Publish/>
-          </Right>
+          {owner ? (
+            <Right>
+              <Share/>
+              <Space/>
+              <Publish/>
+            </Right>
+            ) : <Publish/>
+          }
         </TopLine>
         <ContentContainer>
           <Title/>

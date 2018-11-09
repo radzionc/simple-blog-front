@@ -4,7 +4,8 @@ import * as a from '../actions/your-stories'
 const getState = () => ({
   tab: 'drafts',
   drafts: undefined,
-  published: undefined
+  published: undefined,
+  shared: undefined
 })
 
 export default _ =>

@@ -13,6 +13,7 @@ export const PUBLISH_STORY = storyId => `${STORIES}${storyId}/publish`
 export const USER_STORIES = userId => `${STORIES}user/${userId}`
 export const STORY_DETAIL = storyId => `${STORIES}${storyId}`
 export const DRAFTS = `${STORIES}drafts`
+export const SHARED = `${STORIES}shared`
 export const TOGGLE_LIKE = storyId => `${STORIES}${storyId}/toggleLike`
 export const SHARE = storyId => `${STORIES}${storyId}/share`
 
