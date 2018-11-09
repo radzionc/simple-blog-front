@@ -38,7 +38,7 @@ export default connectTo(
                 title={story.title}
                 dateText={dateText}
                 onEdit={() => edit(story.id)}
-                onDelete={() => remove(story.id)}
+                onDelete={tab !== 'shared' ? () => remove(story.id) : undefined}
                 onClick={() => tab === 'published' ? toStory(story.id) : edit(story.id) }
               />
             )

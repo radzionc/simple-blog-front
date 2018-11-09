@@ -49,7 +49,7 @@ export default connectTo(
               <Space/>
               <Publish/>
             </Right>
-            ) : <Publish/>
+            ) : <div/>
           }
         </TopLine>
         <ContentContainer>
