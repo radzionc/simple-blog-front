@@ -25,6 +25,8 @@ const getDefaultState = () => ({
   link: '',
   tags: [],
   tagsMenuOpen: false,
+  shareDialogOpen: false,
+  userToShareName: '',
   editingTag: '',
   saving: false,
 })
@@ -183,7 +185,19 @@ export default () => createReducer(
       tags: story.tags,
       lastSave: Date.now(),
     }),
-    [a.clear]: () => getDefaultState()
+    [a.clear]: () => getDefaultState(),
+    [a.toggleShareDialog]: state => ({
+      ...state,
+      shareDialogOpen: !state.shareDialogOpen
+    }),
+    [a.share]: state => ({
+      ...state,
+      shareDialogOpen: false
+    }),
+    [a.changeUserToShareName]: (state, userToShareName) => ({
+      ...state,
+      userToShareName
+    })
   },
   getDefaultState()
 )

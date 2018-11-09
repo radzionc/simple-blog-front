@@ -20,3 +20,7 @@ export const publish = createAction()
 
 export const receiveStoryForEdit = createAction()
 export const clear = createAction()
+
+export const toggleShareDialog = createAction()
+export const share = createAction()
+export const changeUserToShareName = createAction()
