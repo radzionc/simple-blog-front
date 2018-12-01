@@ -12,6 +12,7 @@
 ```bash
 git clone https://github.com/RodionChachura/simple-blog-front
 cd simple-blog-front
+npm install
 npm start
 ```
 
