@@ -16,7 +16,7 @@ npm install
 npm start
 ```
 
-## [Story on Medium](https://medium.com/@geekrodion/blog-with-asp-net-core-and-react-redux-c80857b93cb6)
+## [Blog post](https://geekrodion.com/blog/asp-react-blog)
 
 ## License
 
